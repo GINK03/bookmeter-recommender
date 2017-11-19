@@ -47,7 +47,7 @@ def scrape():
       break
     urls = links
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as exe:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=512) as exe:
       for url, html, _links, soup in exe.map( _map1, urls):
         if html is None:
           continue # dbにも入れない

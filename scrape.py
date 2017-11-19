@@ -1,0 +1,98 @@
+import requests
+import bs4 
+import math
+import time
+import sys
+import plyvel
+
+import pickle
+import gzip
+
+import concurrent.futures
+
+def _map1(url):
+  print('now scraping', url)
+  try:
+    req = requests.get(url)
+    if( req.status_code != 200 ):
+      print('status code', req.status_code )
+      return url, None, None
+
+    soup = bs4.BeautifulSoup( req.text, 'html5lib' )
+    
+    _links = []
+    for link in soup.find_all('a', href=True):
+      href = link['href'] 
+      try:
+        if href[0] == '/':
+          href = 'https://bookmeter.com' + href
+      except IndexError:
+        continue
+      if 'https://bookmeter.com' not in href:
+        continue
+      _links.append( href )
+    return url, req.text, _links
+  except Exception as e:
+    print('Deep Error', e)
+    return url, None, None
+
+db = plyvel.DB('htmls.ldb', create_if_missing=True)
+def scrape():
+  links = ['https://bookmeter.com/users/1/books/read'] 
+  if '--resume' in sys.argv:
+    saveLinks = pickle.loads( gzip.decompress( open('saveLinks.pkl.gz', 'rb').read() ) )
+    links = list(saveLinks)
+  while True:
+    if len(links) == 0:
+      break
+    urls = links
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=128) as exe:
+      for url, html, _links in exe.map( _map1, urls):
+        if html is None:
+          continue
+        db.put(bytes(url,'utf8'), gzip.compress(pickle.dumps(html)))
+        links.remove(url)
+        for _link in _links:
+          if db.get(bytes(_link, 'utf8')) is not None:
+            continue
+          print('find new link', _link)
+          links.append( _link )
+
+    time.sleep(0.1)
+
+def dump():
+  links = set()
+  arrs = [(index, url, html) for index, (url, html) in enumerate(db)]
+  size = len(arrs)
+  for index, url, html in arrs: 
+    print('now iter', index, '/', size)
+    url = url.decode('utf8')
+    html = pickle.loads( gzip.decompress(html) )
+    try:
+      soup = bs4.BeautifulSoup(html, 'html5lib')
+    except TypeError:
+      continue
+
+    for link in soup.find_all('a', href=True):
+      href = link['href'] 
+      try:
+        if href[0] == '/':
+          href = 'https://bookmeter.com' + href
+      except IndexError:
+        continue
+      if 'https://bookmeter.com' not in href:
+        continue
+      links.add( href )
+  
+  saveLinks = []
+  for link in links:
+    if db.get( bytes(link, 'utf8') ) is None:
+      saveLinks.append(link)
+  open('saveLinks.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(saveLinks)) ) 
+
+if '--scrape' in sys.argv:
+  scrape()
+
+if '--dump' in sys.argv: 
+  dump()

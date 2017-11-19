@@ -16,7 +16,7 @@ def _map1(url):
     req = requests.get(url)
     if( req.status_code != 200 ):
       print('status code', req.status_code )
-      return url, None, None
+      return url, None, None, None
 
     soup = bs4.BeautifulSoup( req.text, 'html5lib' )
     
@@ -28,13 +28,13 @@ def _map1(url):
           href = 'https://bookmeter.com' + href
       except IndexError:
         continue
-      if 'https://bookmeter.com' not in href:
+      if 'https://bookmeter.com/users' not in href:
         continue
       _links.append( href )
-    return url, req.text, _links
+    return url, req.text, _links, None
   except Exception as e:
     print('Deep Error', e)
-    return url, None, None
+    return url, None, None, None
 
 db = plyvel.DB('htmls.ldb', create_if_missing=True)
 def scrape():
@@ -48,10 +48,10 @@ def scrape():
     urls = links
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=128) as exe:
-      for url, html, _links in exe.map( _map1, urls):
+      for url, html, _links, soup in exe.map( _map1, urls):
         if html is None:
-          continue
-        db.put(bytes(url,'utf8'), gzip.compress(pickle.dumps(html)))
+          continue # dbにも入れない
+        db.put(bytes(url,'utf8'), gzip.compress(pickle.dumps( (html, _links ) )))
         links.remove(url)
         for _link in _links:
           if db.get(bytes(_link, 'utf8')) is not None:
@@ -68,20 +68,16 @@ def dump():
   for index, url, html in arrs: 
     print('now iter', index, '/', size)
     url = url.decode('utf8')
-    html = pickle.loads( gzip.decompress(html) )
-    try:
-      soup = bs4.BeautifulSoup(html, 'html5lib')
-    except TypeError:
-      continue
+    html, _links = pickle.loads( gzip.decompress(html) )
 
-    for link in soup.find_all('a', href=True):
-      href = link['href'] 
+    for link in _links:
+      href = link 
       try:
         if href[0] == '/':
           href = 'https://bookmeter.com' + href
       except IndexError:
         continue
-      if 'https://bookmeter.com' not in href:
+      if 'https://bookmeter.com/users' not in href:
         continue
       links.add( href )
   
@@ -89,6 +85,7 @@ def dump():
   for link in links:
     if db.get( bytes(link, 'utf8') ) is None:
       saveLinks.append(link)
+  print(saveLinks)
   open('saveLinks.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(saveLinks)) ) 
 
 if '--scrape' in sys.argv:

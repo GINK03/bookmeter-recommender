@@ -9,11 +9,16 @@ import pickle
 import gzip
 
 import concurrent.futures
+from requests.auth import HTTPProxyAuth
 
+import random
+import json
 def _map1(url):
   print('now scraping', url)
   try:
-    req = requests.get(url)
+    #auth = HTTPProxyAuth("irep", "irepawr003")
+    proxy = random.choice( proxys )
+    req = requests.get(url, proxies=proxy )
     if( req.status_code != 200 ):
       print('status code', req.status_code )
       return url, None, None, None
@@ -31,12 +36,20 @@ def _map1(url):
       if 'https://bookmeter.com/users' not in href:
         continue
       _links.append( href )
+    print('normaly done, ', url)
     return url, req.text, _links, None
   except Exception as e:
     print('Deep Error', e)
+    # 原因となったproxyを削除する
+    proxys.remove(proxy)
     return url, None, None, None
 
 db = plyvel.DB('htmls.ldb', create_if_missing=True)
+proxys = []
+for triple in json.loads(open('misc/proxies.json').read() ):
+  ip, port, cn = triple
+  proxys.append( {'https': '{ip}:{port}'.format(ip=ip,port=port)} )
+
 def scrape():
   links = ['https://bookmeter.com/users/1/books/read'] 
   if '--resume' in sys.argv:
@@ -47,7 +60,7 @@ def scrape():
       break
     urls = links
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=512) as exe:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=64) as exe:
       for url, html, _links, soup in exe.map( _map1, urls):
         if html is None:
           continue # dbにも入れない

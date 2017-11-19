@@ -17,8 +17,12 @@ def _map1(url):
   print('now scraping', url)
   try:
     #auth = HTTPProxyAuth("irep", "irepawr003")
-    proxy = random.choice( proxys )
-    req = requests.get(url, proxies=proxy )
+    if random.random() < 0.5:
+      proxy = random.choice( proxys )
+      req = requests.get(url, proxies=proxy )
+    else:
+      req = requests.get(url )
+      
     if( req.status_code != 200 ):
       print('status code', req.status_code )
       return url, None, None, None
@@ -60,7 +64,7 @@ def scrape():
       break
     urls = links
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=64) as exe:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=512) as exe:
       for url, html, _links, soup in exe.map( _map1, urls):
         if html is None:
           continue # dbにも入れない

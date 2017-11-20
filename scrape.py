@@ -17,6 +17,10 @@ import random
 import json
 
 def _map1(url):
+  
+  local_name = 'htmls/{}.pkl.gz'.format( url.replace('/', '_') )
+  if os.path.exists(local_name):
+    return url, None, None, None
   print('now scraping', url)
   try:
     headers = {

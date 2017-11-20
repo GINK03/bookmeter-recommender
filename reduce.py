@@ -2,11 +2,14 @@ import pickle
 import gzip
 import json
 import sys
-
+import random
 if '--fold1' in sys.argv:
   key_pair = {}
-  for line in open('mapped.jsonp'):
+  for index, line in enumerate( open('mapped.jsonp') ):
+    #print(line)
     line = line.strip()
+    if index%1000 == 0:
+      print('iter', index)
     key, val = line.split('\t')
     if key_pair.get(key) is None:
       key_pair[key] = {'time-series':set(), 'books':set()}
@@ -28,15 +31,17 @@ if '--label1' in sys.argv:
  
   for key, pair in key_pair.items():
     ts = sorted( pair['time-series'] )
-    print(key, ts)
+    if ts == []:
+      continue
+    #print(key, ts)
 
     labels = []
-    for i in range(0, len(ts) - 2):
+    for i in range(0, len(ts) - 5):
       start = ts[i]
-      print(start)
+      #print(start)
       evalDates = [start]
       # 探索する範囲
-      for k in range(1, 3):
+      for k in range(1, 6):
         es = start.split('/')
         year = int(es[0])
         month = int(es[1])
@@ -46,9 +51,9 @@ if '--label1' in sys.argv:
         else:
           month=month+k
         nextDate = '{}/{:02d}'.format(year,month)
-        print('gen', nextDate)
+        #print('gen', nextDate)
         evalDates.append( nextDate )
 
       label = all( [ edate in ts for edate in evalDates ]  )
       labels.append(label)
-    print(labels, pair['books'] )
+    print( json.dumps([1.0 if any(labels) else 0.0 , list(pair['books'])], ensure_ascii=False) )

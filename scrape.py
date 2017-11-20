@@ -11,6 +11,7 @@ import gzip
 
 import concurrent.futures
 from requests.auth import HTTPProxyAuth
+import glob
 
 import random
 import json
@@ -91,13 +92,16 @@ def scrape():
 
 def dump():
   links = set()
-  arrs = [(index, url, html) for index, (url, html) in enumerate(db)]
+  arrs = [(index, filename) for index, filename in enumerate(glob.glob('htmls/*'))]
   size = len(arrs)
-  for index, url, html in arrs: 
-    print('now iter', index, '/', size)
-    url = url.decode('utf8')
-    html, _links = pickle.loads( gzip.decompress(html) )
 
+  alreadies = set([])
+  for index, filename in arrs:
+    url = filename.split('/').pop().replace('_', '/')
+    alreadies.add( url )
+  for index, filename in arrs: 
+    print('now iter', index, '/', size)
+    html, _links = pickle.loads( gzip.decompress(open(filename, 'rb').read() ) )
     for link in _links:
       href = link 
       try:
@@ -108,10 +112,11 @@ def dump():
       if 'https://bookmeter.com/users' not in href or 'read' not in href:
         continue
       links.add( href )
+      #print(links)
   
   saveLinks = []
   for link in links:
-    if db.get( bytes(link, 'utf8') ) is None:
+    if link not in alreadies:
       saveLinks.append(link)
   print(saveLinks)
   open('saveLinks.pkl.gz', 'wb').write( gzip.compress(pickle.dumps(saveLinks)) ) 

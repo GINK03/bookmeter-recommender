@@ -36,12 +36,12 @@ if '--label1' in sys.argv:
     #print(key, ts)
 
     labels = []
-    for i in range(0, len(ts) - 5):
+    for i in range(0, len(ts) - 8):
       start = ts[i]
       #print(start)
       evalDates = [start]
       # 探索する範囲
-      for k in range(1, 6):
+      for k in range(1, 9):
         es = start.split('/')
         year = int(es[0])
         month = int(es[1])

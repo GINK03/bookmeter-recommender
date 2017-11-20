@@ -11,15 +11,16 @@ import re
 
 import glob
 
-names = glob.glob('./htmls/*.pkl.gz')
-for name in names:
-  name
+import concurrent.futures
+
+def _map1(arr):
+  index, name = arr
+  print('now iter', index, name, file=sys.stderr)
   
-  if re.search(r'read', name) is None:
-    continue
-  
-  #print(key)
-  html, links = pickle.loads(gzip.decompress( open(name,'rb').read() ))
+  try:
+    html, links = pickle.loads(gzip.decompress( open(name,'rb').read() ))
+  except Exception as e:
+    return []
   #print( html )
   soup = bs4.BeautifulSoup(html)
 
@@ -28,10 +29,26 @@ for name in names:
   #user_id   = re.search(r'/(\d{1,})/', key).group(1)
 
   name_id = '{}_{}'.format(user_name, user_id)
+
+  rets = []
   for div in soup.find_all('div', {'class':'book__detail'}):
     title = div.find('div', {'class':'detail__title'}).text
     page  = div.find('div', {'class':'detail__page'}).text
     date  = div.find('div', {'class':'detail__date'}).text
     obj = {'title':title, 'page':page, 'date':date}
-    print(name_id + '\t' + json.dumps(obj, ensure_ascii=False) )
+    rets.append(name_id + '\t' + json.dumps(obj, ensure_ascii=False) )
+  return rets
 
+allnames = []
+names = glob.glob('./htmls/*.pkl.gz')
+for index, name in enumerate(names):
+  if re.search(r'read', name) is None:
+    continue
+  allnames.append((index,name)) 
+
+f = open('mapped.jsonp', 'w')
+with concurrent.futures.ProcessPoolExecutor(max_workers=8) as exe:
+  
+  for rets in exe.map(_map1, allnames):
+    for ret in rets:
+      f.write( ret + '\n' )

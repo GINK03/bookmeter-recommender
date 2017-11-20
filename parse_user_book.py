@@ -1,4 +1,3 @@
-import plyvel
 
 import os
 
@@ -10,19 +9,23 @@ import pickle
 import gzip
 import re
 
-db = plyvel.DB('htmls.ldb.b')
-for key,val in db:
-  key = key.decode('utf8')
+import glob
+
+names = glob.glob('./htmls/*.pkl.gz')
+for name in names:
+  name
   
-  if re.search(r'read', key) is None:
+  if re.search(r'read', name) is None:
     continue
   
   #print(key)
-  html, links = pickle.loads(gzip.decompress(val))
+  html, links = pickle.loads(gzip.decompress( open(name,'rb').read() ))
+  #print( html )
   soup = bs4.BeautifulSoup(html)
 
   user_name = soup.find('div', {'class':'userdata-side__name'}).text
-  user_id   = re.search(r'/(\d{1,})/', key).group(1)
+  user_id   = re.search(r'/(\d{1,})/', soup.find('meta', {'property':'og:url'})['content']).group(1)
+  #user_id   = re.search(r'/(\d{1,})/', key).group(1)
 
   name_id = '{}_{}'.format(user_name, user_id)
   for div in soup.find_all('div', {'class':'book__detail'}):

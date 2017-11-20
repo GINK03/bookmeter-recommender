@@ -16,8 +16,8 @@ import glob
 import random
 import json
 
-def _map1(url):
-  
+def _map1(arr):
+  index, url = arr
   local_name = 'htmls/{}.pkl.gz'.format( url.replace('/', '_') )
   if os.path.exists(local_name):
     return url, None, None, None
@@ -27,10 +27,11 @@ def _map1(url):
       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:56.0) Gecko/20100101 Firefox/56.0',
     }
     #if random.random() < 0.5:
-    #proxy = random.choice( proxys )
-    #req = requests.get(url, proxies=proxy )
+    proxy = proxys[index]
+    print( proxy )
+    req = requests.get(url, headers=headers, proxies=proxy )
     #else:
-    req = requests.get(url, headers=headers )
+    #req = requests.get(url, headers=headers )
       
     if( req.status_code != 200 ):
       print('status code', req.status_code )
@@ -53,6 +54,7 @@ def _map1(url):
     local_name = 'htmls/{}.pkl.gz'.format( url.replace('/', '_') )
     open(local_name,'wb').write( gzip.compress(pickle.dumps( (req.text, _links ) )) )
     print('normaly done, ', url)
+    time.sleep(1.0)
     return url, req.text, _links, None
   except Exception as e:
     print('Deep Error', e)
@@ -62,9 +64,11 @@ def _map1(url):
 
 #db = plyvel.DB('htmls.ldb', create_if_missing=True)
 proxys = []
-for triple in json.loads(open('misc/proxies.json').read() ):
-  ip, port, cn = triple
-  proxys.append( {'https': '{ip}:{port}'.format(ip=ip,port=port)} )
+for line in open('misc/aws_ip.txt'):
+  line = line.strip()
+  typed, ipaddr = line.split()
+  proxys.append( {'http': '{}:8080'.format(ipaddr) } )
+  print( {'http': '{}:8080'.format(ipaddr) } )
 
 def scrape():
   links = ['https://bookmeter.com/users/1/books/read'] 
@@ -74,10 +78,10 @@ def scrape():
   while True:
     if len(links) == 0:
       break
-    urls = links
+    arrs = [ (index%len(proxys), url) for index, url in enumerate(links) ]
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=1) as exe:
-      for url, html, _links, soup in exe.map( _map1, urls):
+    with concurrent.futures.ProcessPoolExecutor(max_workers=6) as exe:
+      for url, html, _links, soup in exe.map( _map1, arrs):
         if html is None:
           continue # dbにも入れない
         #db.put(bytes(url,'utf8'), gzip.compress(pickle.dumps( (html, _links ) )))
@@ -105,7 +109,10 @@ def dump():
     alreadies.add( url )
   for index, filename in arrs: 
     print('now iter', index, '/', size)
-    html, _links = pickle.loads( gzip.decompress(open(filename, 'rb').read() ) )
+    try:
+      html, _links = pickle.loads( gzip.decompress(open(filename, 'rb').read() ) )
+    except Exception as e:
+      continue
     for link in _links:
       href = link 
       try:

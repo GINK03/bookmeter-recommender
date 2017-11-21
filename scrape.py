@@ -64,11 +64,11 @@ def _map1(arr):
 
 #db = plyvel.DB('htmls.ldb', create_if_missing=True)
 proxys = []
-for line in open('misc/aws_ip.txt'):
+for line in open('aws_ip.txt'):
   line = line.strip()
   typed, ipaddr = line.split()
-  proxys.append( {'http': '{}:8080'.format(ipaddr) } )
-  print( {'http': '{}:8080'.format(ipaddr) } )
+  proxys.append( {'http': '{}:8080'.format(ipaddr), 'https': '{}:8080'.format(ipaddr) } )
+  print( {'http': '{}:8080'.format(ipaddr),  'https': '{}:8080'.format(ipaddr) } )
 
 def scrape():
   links = ['https://bookmeter.com/users/1/books/read'] 
@@ -80,7 +80,7 @@ def scrape():
       break
     arrs = [ (index%len(proxys), url) for index, url in enumerate(links) ]
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=7) as exe:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=24) as exe:
       for url, html, _links, soup in exe.map( _map1, arrs):
         if html is None:
           continue # dbにも入れない

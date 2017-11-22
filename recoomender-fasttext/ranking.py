@@ -27,6 +27,7 @@ def _sim(arrs):
     vec = vecs[i]
     book = books[i]
     if os.path.exists('sims/{}.json'.format(book)) is True:
+      print('already processed', book)
       continue
     print( i, '/', size, book )
     norm = np.linalg.norm(vec)*allnorms

@@ -11,6 +11,9 @@
 - fasttext
 - skipgram
 - 512次元
+- n-chargramは無効化
+
+## 定性的な結果
 
 ## 参考
 [1] [Instacart Product2Vec & Clustering Using word2vec](https://www.kaggle.com/goodvc/instacart-product2vec-clustering-using-word2vec)  

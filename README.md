@@ -7,6 +7,11 @@
 - 本のコンテンツの類似度ではなく、同じような本を読む人が同じ時代にどういった方も、また、読んでいたかという解釈
 - 時系列的な影響を考慮した協調フィルタリングのようなものとして働くと期待できる
 
+## 学習アルゴリズム
+- fasttext
+- skipgram
+- 512次元
+
 ## 参考
 [1] [Instacart Product2Vec & Clustering Using word2vec](https://www.kaggle.com/goodvc/instacart-product2vec-clustering-using-word2vec)  
 [2] [MRNet-Product2Vec: A Multi-task Recurrent Neural Network for Product Embeddings](https://arxiv.org/pdf/1709.07534.pdf)  

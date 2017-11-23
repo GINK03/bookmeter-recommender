@@ -51,7 +51,14 @@ for index, name in enumerate(names):
     continue
   allnames.append((index,name)) 
 
-f = open('mapped.jsonp', 'w')
-with concurrent.futures.ProcessPoolExecutor(max_workers=16) as exe:
-  exe.map(_map1, allnames)
+if '--map1' in sys.argv:
+  with concurrent.futures.ProcessPoolExecutor(max_workers=16) as exe: 
+    exe.map(_map1, allnames)
+
+if '--fold1' in sys.argv:
+  f = open('mapped.jsonp', 'w')
+  for name in glob.glob('rets/*.pkl.gz'):
+    rets = pickle.loads( gzip.decompress( open(name, 'rb').read() ) )
+    for ret in rets:
+      f.write(ret + '\n')
      

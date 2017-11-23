@@ -1,1 +1,1 @@
-./fasttext skipgram -dim 512 -maxn 0 -ws 15 -thread 16 -input dataset.txt -output model 
+./fasttext skipgram -dim 128 -maxn 0 -ws 5 -thread 16 -input dataset.txt -output model 

@@ -15,7 +15,11 @@ import concurrent.futures
 
 def _map1(arr):
   index, name = arr
-  print('now iter', index, name, file=sys.stderr)
+  save_name = 'rets/' + name.split('/').pop()
+  if os.path.exists(save_name) is True:
+    return []
+  if index%100 == 0:
+    print('now iter', index, name, file=sys.stderr)
   
   try:
     html, links = pickle.loads(gzip.decompress( open(name,'rb').read() ))
@@ -37,7 +41,8 @@ def _map1(arr):
     date  = div.find('div', {'class':'detail__date'}).text
     obj = {'title':title, 'page':page, 'date':date}
     rets.append(name_id + '\t' + json.dumps(obj, ensure_ascii=False) )
-  return rets
+  #return name, rets
+  open(save_name, 'wb').write( gzip.compress(pickle.dumps(rets)))
 
 allnames = []
 names = glob.glob('./htmls/*.pkl.gz')
@@ -47,8 +52,6 @@ for index, name in enumerate(names):
   allnames.append((index,name)) 
 
 f = open('mapped.jsonp', 'w')
-with concurrent.futures.ProcessPoolExecutor(max_workers=8) as exe:
-  
-  for rets in exe.map(_map1, allnames):
-    for ret in rets:
-      f.write( ret + '\n' )
+with concurrent.futures.ProcessPoolExecutor(max_workers=16) as exe:
+  exe.map(_map1, allnames)
+     

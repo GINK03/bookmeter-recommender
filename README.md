@@ -90,6 +90,26 @@ $ python3 ranking.py --sim
 
 34万冊にも及ぶ購買行動関連スコアを計算したので、きっとあなたの好きな本を広げるにも役に立つはずです。参考にしていただければ幸いです  
 
+## 読んでる人が多い本ランキング
+読んでる人が多い本(2017年11月時点)
+```console
+永遠の0(講談社文庫) 6805
+ビブリア古書堂の事件手帖―栞子さんと奇妙な客… 6551
+舟を編む 6500
+イニシエーション・ラブ(文春文庫) 6158
+火花 5988
+阪急電車(幻冬舎文庫) 5979
+夜は短し歩けよ乙女(角川文庫) 5964
+君の膵臓をたべたい 5504
+コンビニ人間 5134
+ビブリア古書堂の事件手帖2栞子さんと謎め… 5075
+レインツリーの国(新潮文庫) 4994
+その女アレックス(文春文庫) 4792
+ぼくは明日、昨日のきみとデートする(宝島社… 4631
+氷菓(角川文庫) 4606
+ビブリア古書堂の事件手帖3~栞子さんと消え… 4590
+```
+
 ## 参考
 [1] [Instacart Product2Vec & Clustering Using word2vec](https://www.kaggle.com/goodvc/instacart-product2vec-clustering-using-word2vec)  
 [2] [MRNet-Product2Vec: A Multi-task Recurrent Neural Network for Product Embeddings](https://arxiv.org/pdf/1709.07534.pdf)  

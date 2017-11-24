@@ -57,7 +57,11 @@ if '--map1' in sys.argv:
 
 if '--fold1' in sys.argv:
   f = open('mapped.jsonp', 'w')
-  for name in glob.glob('rets/*.pkl.gz'):
+  files =  glob.glob('rets/*.pkl.gz')
+  size = len(files)
+  for index, name in enumerate(files):
+    if index%100 == 0:
+      print('now iter', index, '/', size, name)
     rets = pickle.loads( gzip.decompress( open(name, 'rb').read() ) )
     for ret in rets:
       f.write(ret + '\n')

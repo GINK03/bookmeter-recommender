@@ -47,7 +47,7 @@ def _map1(arr):
           href = 'https://bookmeter.com' + href
       except IndexError:
         continue
-      if 'https://bookmeter.com/users' not in href or 'read' not in href:
+      if 'https://bookmeter.com/users' not in href:
         continue
       _links.append( href )
       print(href)
@@ -80,7 +80,7 @@ def scrape():
       break
     arrs = [ (index%len(proxys), url) for index, url in enumerate(links) ]
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=24) as exe:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=35) as exe:
       for url, html, _links, soup in exe.map( _map1, arrs):
         if html is None:
           continue # dbにも入れない
@@ -108,7 +108,8 @@ def dump():
     url = filename.split('/').pop().replace('_', '/')
     alreadies.add( url )
   for index, filename in arrs: 
-    print('now iter', index, '/', size)
+    if index%1000 == 0:
+      print('now iter', index, '/', size)
     try:
       html, _links = pickle.loads( gzip.decompress(open(filename, 'rb').read() ) )
     except Exception as e:
@@ -120,7 +121,7 @@ def dump():
           href = 'https://bookmeter.com' + href
       except IndexError:
         continue
-      if 'https://bookmeter.com/users' not in href or 'read' not in href:
+      if 'https://bookmeter.com/users' not in href:
         continue
       links.add( href )
       #print(links)

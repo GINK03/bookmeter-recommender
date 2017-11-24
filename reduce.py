@@ -3,6 +3,22 @@ import gzip
 import json
 import sys
 import random
+
+if '--count_users' in sys.argv:
+  users = set()
+  for index, line in enumerate( open('mapped.jsonp') ):
+    #print(line)
+    line = line.strip()
+    if index%1000 == 0:
+      print('iter', index)
+    try:
+      user, obj = line.split('\t')
+    except:
+      continue
+    users.add(user)
+  print('total size', len(users))
+
+
 if '--fold1' in sys.argv:
   key_pair = {}
   for index, line in enumerate( open('mapped.jsonp') ):
@@ -10,7 +26,10 @@ if '--fold1' in sys.argv:
     line = line.strip()
     if index%1000 == 0:
       print('iter', index)
-    key, val = line.split('\t')
+    try:
+      key, val = line.split('\t')
+    except Exception:
+      continue
     if key_pair.get(key) is None:
       key_pair[key] = {'time-series':set(), 'books':set()}
 

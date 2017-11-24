@@ -34,7 +34,7 @@ def _sim(arrs):
     invnorm = norm**-1
     x_wa = (vec * vecs).sum(axis=1) 
     sims = x_wa * invnorm
-    sims = dict( [(index_book[index], sim) for index, sim in enumerate(sims.tolist())] )
+    sims = dict( sorted( [(index_book[index], sim) for index, sim in enumerate(sims.tolist())], key=lambda x:x[1]*-1 )[:128] )
     try:
       open('sims/{}.json'.format(book), 'w').write( json.dumps(sims, indent=2, ensure_ascii=False, sort_keys=True) )     
     except Exception as e:

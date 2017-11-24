@@ -1,6 +1,8 @@
-# 
+# ユーザ行動系列を意識したskip gram
 
-## ユーザ行動時系列を意識したskip gram
+一部でproduct2vecと呼ばれる技術のようですが、同名のRNNを用いた方法も提案されており、何が何だかわからないですが、購買鼓動を一連の時系列として文章のように捉えることで、似た購買行動をするユーザの購買製品が似たようなベクトルになるという、大まかな筋道があります  
+
+今までスクレイピングがまともにできなかったサイト様に関して、いくつかできるようになったという背景があり、
 
 ## 期待される結果
 - 流行があり、時代によってある本が読まれやすい場合、同じ時代に同じ本の流れで、読まれやすい本のタイトルの抽出
@@ -22,7 +24,7 @@ $ python3 parse_user_book.py --fold1
 bookmeterさんのデータをpythonで扱うデータ型に変換します
 ```console
 $ python3 reduce.py --fold1
-$ python3 reduce.py --label1 >  recoomender-fasttext/dump.jsonp
+$ python3 reduce.py --label1 > recoomender-fasttext/dump.jsonp
 ```
 fasttext(skipgramを今回計算するソフト)で処理できる形式に変換します
 ```console

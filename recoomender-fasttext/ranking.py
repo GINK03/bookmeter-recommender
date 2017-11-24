@@ -47,7 +47,7 @@ if '--sim' in sys.argv:
   vecs = []
   for book, vec in book_vec.items():
     vec = np.array(vec)
-    if( (512,) != vec.shape ):
+    if( (128,) != vec.shape ):
       continue
     books.append(book)
     vecs.append( vec)

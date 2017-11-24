@@ -13,6 +13,31 @@
 - 512次元
 - n-chargramは無効化
 
+## 前処理
+bookmeterさんからスクレイピンしたデータからユーザ名とIDで読んだ本を時系列順に紐づけます
+```console
+$ python3 parse_user_book.py --map1
+$ python3 parse_user_book.py --fold1
+```
+bookmeterさんのデータをpythonで扱うデータ型に変換します
+```console
+$ python3 reduce.py --fold1
+$ python3 reduce.py --label1 >  recoomender-fasttext/dump.jsonp
+```
+fasttext(skipgramを今回計算するソフト)で処理できる形式に変換します
+```console
+$ cd recoomender-fasttext
+$ python3 mkdataset.py
+```
+## SkipGramでベクトル化と、本ごとのcosime similarityの計算
+```console
+$ sh run.sh
+$ python3 ranking.py --to_vec
+$ mkdir sims
+$ python3 ranking.py --sim
+```
+
+
 ## 定性的な結果
 1. 近年、本は大量に出版されて、その時に応じて売れ行きなどが変化するため、その時代に同じような本を買う傾向がある人が同じような買うというプロセスで似た傾向の本を買うと家庭ができそうである  
 2. 本は、趣味嗜好の内容が似ている系列で似る傾向があり、コンテンツの内容では評価されない  

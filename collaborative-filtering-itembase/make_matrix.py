@@ -50,4 +50,7 @@ if '--step2' in sys.argv:
     arrs[index%16].append( (book, users) )
 
   arrs = [ val for key, val in arrs.items() ]
-  _map1(arrs[0])
+  #_map1(arrs[0])
+
+  with concurrent.futures.ProcessPoolExecutor(max_workers=16) as exe:
+    exe.map(_map1, arrs)

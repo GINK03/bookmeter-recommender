@@ -99,6 +99,9 @@ def scrape():
     break
 
 def dump():
+
+  # define sampling rate 
+  
   links = set()
   arrs = [(index, filename) for index, filename in enumerate(glob.glob('htmls/*'))]
   size = len(arrs)
@@ -110,6 +113,11 @@ def dump():
   for index, filename in arrs: 
     if index%1000 == 0:
       print('now iter', index, '/', size)
+    
+    if size > 1000000:
+      # sampling rate作る
+      if random.random() > 0.01:
+        continue
     try:
       html, _links = pickle.loads( gzip.decompress(open(filename, 'rb').read() ) )
     except Exception as e:

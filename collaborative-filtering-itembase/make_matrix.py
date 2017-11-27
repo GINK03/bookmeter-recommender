@@ -12,6 +12,7 @@ import concurrent.futures
 
 import json
 
+import os
 if '--step1' in sys.argv:
   key_pair = pickle.loads( gzip.decompress(open('../tmp/key_pair.pkl.gz', 'rb').read()) )
 
@@ -31,11 +32,17 @@ if '--step2' in sys.argv:
     #book_index = pickle.loads(open('book_index.pkl', 'rb').read() )
     _book_users = pickle.loads(open('book_users.pkl', 'rb').read() )
     for book, users in arr:
+      if os.path.exists('book_book/{}.json'.format(book.replace('/', '_'))) is True:
+        print('already processed', book)
+        continue
       print( 'now scan', book )
       # あるユーザから、特定のユーザの読んだ本の集合の積が大きい順top 10を保存
       book_simil = {}
       for _book, _users in _book_users.items():
-        book_simil[_book] = len(users & _users)
+        try:
+          book_simil[_book] = len(users & _users) / (len(users) * len(_users)) 
+        except ZeroDivisionError:
+          continue
       
       book_simil = { _book: simil  for _book, simil in sorted(book_simil.items(), key=lambda x:x[1]*-1)[:21] }
       
@@ -52,5 +59,5 @@ if '--step2' in sys.argv:
   arrs = [ val for key, val in arrs.items() ]
   #_map1(arrs[0])
 
-  with concurrent.futures.ProcessPoolExecutor(max_workers=16) as exe:
+  with concurrent.futures.ProcessPoolExecutor(max_workers=8) as exe:
     exe.map(_map1, arrs)

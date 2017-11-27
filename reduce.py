@@ -24,7 +24,7 @@ if '--fold1' in sys.argv:
   for index, line in enumerate( open('mapped.jsonp') ):
     #print(line)
     line = line.strip()
-    if index%1000 == 0:
+    if index%10000 == 0:
       print('iter', index)
     try:
       key, val = line.split('\t')

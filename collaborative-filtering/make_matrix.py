@@ -36,7 +36,10 @@ if '--step2' in sys.argv:
       # あるユーザから、特定のユーザの読んだ本の集合の積が大きい順top 10を保存
       user_simil = {}
       for _user, _books in _user_books.items():
-        user_simil[_user] = len(books & _books) / (len(books)*len(_books))**0.5
+        try:
+          user_simil[_user] = len(books & _books) / (len(books)*len(_books))**0.5
+        except ZeroDivisionError:
+          continue
       
       user_simil = { _user: simil  for _user, simil in sorted(user_simil.items(), key=lambda x:x[1]*-1)[:21] }
       
@@ -51,6 +54,6 @@ if '--step2' in sys.argv:
     arrs[index%16].append( (user, books) )
 
   arrs = [ val for key, val in arrs.items() ]
-  #_map1(arrs[0])
-  with concurrent.futures.ProcessPoolExecutor(max_workers=8) as exe:
+  _map1(arrs[0])
+  with concurrent.futures.ProcessPoolExecutor(max_workers=4) as exe:
     exe.map( _map1, arrs )

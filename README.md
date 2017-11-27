@@ -203,7 +203,7 @@ $ python3 ranking.py --sim
 
 34万冊にも及ぶ購買行動関連スコアを計算したので、きっとあなたの好きな本を広げるにも役に立つはずです。参考にしていただければ幸いです  
 
-[Google Cloud Strageにtar.gzで固めたファイルを置いてある]()ので、どの本が何の本と関連度がどれくらい持ちたい方は参考にしてみてください
+[Google Cloud Strageにtar.gzで固めたファイルを置いてある](https://storage.googleapis.com/nardtree/bookmeter-fasttext-sims-20171127/sims.tar.gz)ので、どの本が何の本と関連度がどれくらい持ちたい方は参考にしてみてください
 
 
 # オプションデータ

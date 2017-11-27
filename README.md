@@ -10,8 +10,9 @@
 Albertさんなどのブログなどを参考し、今回の問題に当てはめると、このようなことであると言えそうです。  
 
 <p align="center">
-  <img width="700px" src="https://user-images.githubusercontent.com/4949982/33257997-844da7a6-d39b-11e7-898a-bdb58f9151b2.png">
+  <img width="700px" src="https://user-images.githubusercontent.com/4949982/33258093-c83903ca-d39b-11e7-8c4d-0ca9622f6d91.png">
 </p>
+<div align="center"> 図1. 今回用いた協調フィルタリング </div>
 
 # 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 

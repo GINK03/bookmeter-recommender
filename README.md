@@ -7,7 +7,11 @@
 
 例えば、今回はbookmeter.comさまのユーザの読んだ本情報を用いて、一人のユーザを一つの特徴量としてみなすことで、本同士の関連度が計算可能になります  
 
-Albertさんなどのブログなどを参考にすると、このようなことであると記述されています
+Albertさんなどのブログなどを参考し、今回の問題に当てはめると、このようなことであると言えそうです。  
+
+<p align="center">
+  <img width="700px" src="https://user-images.githubusercontent.com/4949982/33257997-844da7a6-d39b-11e7-898a-bdb58f9151b2.png">
+</p>
 
 # 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 

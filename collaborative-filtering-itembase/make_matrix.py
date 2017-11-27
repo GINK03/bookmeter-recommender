@@ -39,10 +39,7 @@ if '--step2' in sys.argv:
       # あるユーザから、特定のユーザの読んだ本の集合の積が大きい順top 10を保存
       book_simil = {}
       for _book, _users in _book_users.items():
-        try:
-          book_simil[_book] = len(users & _users) / (len(users) * len(_users)) 
-        except ZeroDivisionError:
-          continue
+        book_simil[_book] = len(users & _users) / (len(users) * len(_users))**0.5
       
       book_simil = { _book: simil  for _book, simil in sorted(book_simil.items(), key=lambda x:x[1]*-1)[:21] }
       

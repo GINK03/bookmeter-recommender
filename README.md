@@ -1,4 +1,26 @@
-# ユーザ行動系列を意識したskip gram
+# 以下の三つのレコメンド系アルゴリズムを使ってみたいと思います
+1. userベースの協調フィルタリング
+2. fasttextでのアイテムベースのproduct2vec(skipgram)
+
+# 1. userベースの協調フィルタリング
+協調フィルタリング自体は簡潔なアルゴリズムで、実装しようと思えば、簡単にできる類のものであるように思えるのですが、製品と製品の類似度を計算するのに、その製品を購入したユーザをベクトル列としてみなすと割と簡単に計算できることがわかりました  
+
+例えば、今回はbookmeter.comさまのユーザの読んだ本情報を用いて、一人のユーザを一つの特徴量としてみなすことで、本同士の関連度が計算可能になります  
+
+Albertさんなどのブログなどを参考し、今回の問題に当てはめると、このようなことであると言えそうです。  
+
+<p align="center">
+  <img width="700px" src="https://user-images.githubusercontent.com/4949982/33258093-c83903ca-d39b-11e7-8c4d-0ca9622f6d91.png">
+</p>
+<div align="center"> 図1. 今回用いた協調フィルタリング </div>
+
+今回用いさせていただいた、bookmeter.comさんから作成したデータセットは[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/htmls.tar.gz)です。27GByte程度あるので、覚悟してダウンロードしてください  
+
+また、必要なユーザと読んだ本とその時のタイムスタンプの情報のみをまとめたものは、[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/mapped.jsonp)からダウンロードできます。  
+
+## 
+
+# 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 
 一部でproduct2vecと呼ばれる技術のようですが、同名のRNNを用いた方法も提案されており、何が何だかわからないですが、購買鼓動を一連の時系列として文章のように捉えることで、似た購買行動をするユーザの購買製品が似たようなベクトルになるという、大まかな筋道と仮説があります  
 

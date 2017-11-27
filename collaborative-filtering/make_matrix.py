@@ -41,7 +41,7 @@ if '--step2' in sys.argv:
         except ZeroDivisionError:
           continue
       
-      user_simil = { _user: simil  for _user, simil in sorted(user_simil.items(), key=lambda x:x[1]*-1)[:21] }
+      user_simil = { _user: simil  for _user, simil in sorted(user_simil.items(), key=lambda x:x[1]*-1)[:101] }
       
       open('user_user/{}.json'.format(user.replace('/', '_')), 'w').write( json.dumps(user_simil, indent=2, ensure_ascii=False) )
 

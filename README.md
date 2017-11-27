@@ -207,6 +207,11 @@ $ python3 ranking.py --sim
 
 
 # オプションデータ
+## 月ごとの本棚に登録された本の累計（その月での）数
+<p align="center">
+  <img width="750px" src="https://user-images.githubusercontent.com/4949982/33263544-9a98ddd4-d3ad-11e7-9649-bd8743758763.png">
+</p>
+
 ## 読んでる人が多い本ランキング
 読んでる人が多い本(2017年11月時点)
 ```json

@@ -1,8 +1,8 @@
 # 2つのレコメンド系アルゴリズム
-1. userベースの協調フィルタリング
+1. アイテムベースの協調フィルタリング
 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 
-# 1. userベースの協調フィルタリング
+# 1. アイテムベースの協調フィルタリング
 協調フィルタリング自体は簡潔なアルゴリズムで、実装しようと思えば、簡単にできる類のものであるように思えるのですが、製品と製品の類似度を計算するのに、その製品を購入したユーザをベクトル列としてみなすと割と簡単に計算できることがわかりました  
 
 例えば、今回はbookmeter.comさまのユーザの読んだ本情報を用いて、一人のユーザを一つの特徴量としてみなすことで、本同士の関連度が計算可能になります  
@@ -17,6 +17,17 @@ Albertさんなどのブログなどを参考し、今回の問題に当ては�
 今回用いさせていただいた、bookmeter.comさんから作成したデータセットは[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/htmls.tar.gz)です。27GByte程度あるので、覚悟してダウンロードしてください  
 
 また、必要なユーザと読んだ本とその時のタイムスタンプの情報のみをまとめたものは、[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/mapped.jsonp)からダウンロードできます。  
+
+## 学習
+Google Cloud Strageから、mapped.jsonpを当プロジェクトにダウンロードしたという前提です
+```console
+$ wget https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/mapped.jsonp
+$ python3 reduce.py --fold1
+$ cd collaborative-filtering-itembase 
+$ python3 make_matrix.py --step1
+$ python3 make_matrix.py --step2 # <- 計算に数日みてください
+```
+
 
 ## 結果.
 **氷菓(1)(角川コミックス・エース)** との類似度  

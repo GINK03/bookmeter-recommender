@@ -16,7 +16,9 @@ Albertさんなどのブログなどを参考し、今回の問題に当ては�
 
 今回用いさせていただいた、bookmeter.comさんから作成したデータセットは[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/htmls.tar.gz)です。27GByte程度あるので、覚悟してダウンロードしてください  
 
-また、必要な情報のみをまとめたものは、こちらからダウンロードできます。  
+また、必要なユーザと読んだ本とその時のタイムスタンプの情報のみをまとめたものは、[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/mapped.jsonp)からダウンロードできます。  
+
+## 
 
 # 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 

@@ -1,11 +1,11 @@
-# 2つのレコメンド系アルゴリズム
-1. アイテムベースの協調フィルタリング
-2. fasttextでのアイテムベースのproduct2vec(skipgram)
+# 2つのレコメンド(類似度計算)系アルゴリズム
+1. 協調フィルタリング
+2. fasttextでの購買時系列を考慮したアイテムベースのproduct2vec(skipgram)
 
-# 1. アイテムベースの協調フィルタリング
-協調フィルタリング自体は簡潔なアルゴリズムで、実装しようと思えば、簡単にできる類のものであるように思えるのですが、製品と製品の類似度を計算するのに、その製品を購入したユーザをベクトル列としてみなすと割と簡単に計算できることがわかりました  
+# 1. 協調フィルタリング
+協調フィルタリング自体は簡潔なアルゴリズムで、実装しようと思えば、簡単にできる類のものであるように思えるのですが、製品と製品の類似度を計算するのに、その製品を購入したユーザをベクトル列としてみなすと割と簡単に計算できます  
 
-例えば、今回はbookmeter.comさまのユーザの読んだ本情報を用いて、一人のユーザを一つの特徴量としてみなすことで、本同士の関連度が計算可能になります  
+例えば、今回はbookmeter.comさまのユーザの読んだ本情報を用いて、一人のユーザを一つのユニークな特徴量としてみなすことで、本同士の関連度が計算可能になります  
 
 Albertさんなどのブログなどを参考し、今回の問題に当てはめると、このようなことであると言えそうです。  
 
@@ -14,7 +14,7 @@ Albertさんなどのブログなどを参考し、今回の問題に当ては�
 </p>
 <div align="center"> 図1. 今回用いた協調フィルタリング </div>
 
-今回用いさせていただいた、bookmeter.comさんから作成したデータセットは[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/htmls.tar.gz)です。27GByte程度あるので、覚悟してダウンロードしてください  
+今回用いさせていただいた、bookmeter.comさんから作成したデータセットは[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/htmls.tar.gz)です。27GByte程度あるので、覚悟してダウンロードしてください（なんどもスクレイピングするのは気がひけるので、初期調査はこのデータセットを公開しますので、有効活用していただけると幸いです。用途はアカデミックな用途に限定されると思います）  
 
 また、必要なユーザと読んだ本とその時のタイムスタンプの情報のみをまとめたものは、[こちら](https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/mapped.jsonp)からダウンロードできます。  
 
@@ -25,9 +25,8 @@ $ wget https://storage.googleapis.com/nardtree/bookmeter-scraping-20171127/mappe
 $ python3 reduce.py --fold1
 $ cd collaborative-filtering-itembase 
 $ python3 make_matrix.py --step1
-$ python3 make_matrix.py --step2 # <- 計算に数日みてください
+$ python3 make_matrix.py --step2 # <- とても重いので、計算に数日みてください
 ```
-
 
 ## 結果.
 **氷菓(1)(角川コミックス・エース)** との類似度  
@@ -111,14 +110,23 @@ PSYCHO-PASSASYLUM2(… 0.09203579866168446
 ```
 PSYCHO-PASSも好きですが、小説でてたんですか！良いですね。買います！←こんな感じのユースケースを想定しています
 
+## データセットのダウンロード
+1. [アイテムベースの協調フィルタリング結果](https://storage.googleapis.com/nardtree/bookmeter-collaborative-filtering-results/book_book.tar.gz)
+2. [ユーザベースの協調フィルタリング結果](https://storage.googleapis.com/nardtree/bookmeter-collaborative-filtering-results/user_user.tar.gz)
+
 # 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 
-一部でproduct2vecと呼ばれる技術のようですが、同名のRNNを用いた方法も提案されており、何が何だかわからないですが、購買鼓動を一連の時系列として文章のように捉えることで、似た購買行動をするユーザの購買製品が似たようなベクトルになるという、大まかな筋道と仮説があります  
+一部でproduct2vecと呼ばれる技術のようですが、同名でRNNを用いた方法も提案されており、購買鼓動を一連の時系列として文章のように捉えることで、似た購買行動をするユーザの購買製品が似たようなベクトルになるという方法を取っているようです  
 
-今までスクレイピングがまともにできなかったサイト様に関して、いくつかできるようになったという背景があり、bookmeter様のサイトをスクレイピングして、データを集めさせていただきました  
+このベクトルとベクトルのコサイン距離か、ユークリッド距離を取れば、購買行動が似た商品ということができそうです  
+
+リクルートではこのアリゴリズムは動作しているよう[4]なのですが、効果のほどはどうなんですかね？知りたいです  
+<p align="center">
+  <img width="700px" src="https://user-images.githubusercontent.com/4949982/33325568-fc19a280-d495-11e7-9240-482aaf383aeb.png">
+</p>
 
 ## 期待される結果
-- 流行があり、時代によってある本が読まれやすい場合、同じ時代に同じ本の流れで、読まれやすい本のタイトルの抽出
+- 流行があり、時代と時期によって読まれやすい本などが存在している場合、同じ時代に同じ流れで、読まれやすい本のレコメンド
 - 本のコンテンツの類似度ではなく、同じような本を読む人が同じ時代にどういった方も、また読んでいたか、という解釈
 - 時系列的な影響を考慮した協調フィルタリングのようなものとして働くと期待できる
 
@@ -258,7 +266,13 @@ $ python3 ranking.py --sim
 0 西の魔女が死んだ(新潮文庫) 1004
 ```
 
+# アイテムベースのレコメンド
+本などの場合、コンテンツが似通っていれば、未読の本のコンテンツをレコメンドするという方法が考えられます  
+この場合、アイテムの中身を見ることが必須になるわけですが、残念ながら本という媒体は知識のプロプラエタリなコンテナなので、そのようなことは通常できないと思います  
+代わりに、ユーザのレビュー情報でレコメンドができるのではないでしょうか
+
 ## 参考
 [1] [Instacart Product2Vec & Clustering Using word2vec](https://www.kaggle.com/goodvc/instacart-product2vec-clustering-using-word2vec)  
 [2] [MRNet-Product2Vec: A Multi-task Recurrent Neural Network for Product Embeddings](https://arxiv.org/pdf/1709.07534.pdf)  
-[3] [Deep Learning at AWS: Embedding & Attention Models](https://www.slideshare.net/AmazonWebServices/deep-learning-at-aws-embedding-attention-models)
+[3] [Deep Learning at AWS: Embedding & Attention Models](https://www.slideshare.net/AmazonWebServices/deep-learning-at-aws-embedding-attention-models)  
+[4] [リクルートのデータで世界へ挑む　組織を率いるサイエンティストの仕事観](http://logmi.jp/134774)

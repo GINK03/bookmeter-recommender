@@ -28,7 +28,7 @@ if '--poll' in sys.argv:
         if title is None or summary is None:
           continue
         title = title.text
-        if os.path.exists('sammaries/{}.json'.format(title.replace('/', '_'))) is True:
+        if os.path.exists('summaries/{}.json'.format(title.replace('/', '_'))) is True:
           continue
         summary = summary.text
         print( name)
@@ -37,6 +37,6 @@ if '--poll' in sys.argv:
         print( summary )
         
         try:
-          open('sammaries/{}.json'.format(title.replace('/', '_')), 'w').write( json.dumps({'name':name, 'title':title, 'summary':summary}, indent=2, ensure_ascii=False))
+          open('summaries/{}.json'.format(title.replace('/', '_')), 'w').write( json.dumps({'name':name, 'title':title, 'summary':summary}, indent=2, ensure_ascii=False))
         except Exception:
           continue

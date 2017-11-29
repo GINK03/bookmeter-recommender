@@ -15,9 +15,11 @@ import glob
 
 import random
 import json
-
+import re
 def _map1(arr):
   index, url = arr
+
+  url = re.sub(r'\?.*?$', '', url)
   local_name = 'htmls/{}.pkl.gz'.format( url.replace('/', '_') )
   if os.path.exists(local_name):
     print('already scraped', url)
@@ -30,7 +32,11 @@ def _map1(arr):
     #if random.random() < 0.5:
     proxy = proxys[index]
     print( proxy )
-    req = requests.get(url, headers=headers, proxies=proxy )
+    try:
+      req = requests.get(url, headers=headers, proxies=proxy )
+    except:
+      return url, None, None, None
+      
     #else:
     #req = requests.get(url, headers=headers )
       
@@ -53,7 +59,10 @@ def _map1(arr):
       _links.append( href )
       print(href)
     local_name = 'htmls/{}.pkl.gz'.format( url.replace('/', '_') )
-    open(local_name,'wb').write( gzip.compress(pickle.dumps( (req.text, _links ) )) )
+    try:
+      open(local_name,'wb').write( gzip.compress(pickle.dumps( (req.text, _links ) )) )
+    except:
+      ... 
     print('normaly done, ', url)
     time.sleep(1.0)
     return url, req.text, _links, None
@@ -81,7 +90,6 @@ def scrape():
       break
     print('iter')
     arrs = [ (index%len(proxys), url) for index, url in enumerate(links) ]
-
     links = []
     with concurrent.futures.ProcessPoolExecutor(max_workers=4*len(proxys)) as exe:
       for url, html, _links, soup in exe.map( _map1, arrs):
@@ -89,8 +97,6 @@ def scrape():
           continue
         open('tmp/finished/' + url.replace('/','_'), 'a' )
         for _link in _links:
-          #if db.get(bytes(_link, 'utf8')) is not None:
-          #  corntinue
  
           if os.path.exists('tmp/finished/' + _link.replace('/','_')) is True:
             continue
@@ -114,7 +120,7 @@ def dump():
     if index%1000 == 0:
       print('now iter', index, '/', size)
    
-    if index > 10000:
+    if index > 1000000:
       break
     #if size > 1000000:
       # sampling rate作る

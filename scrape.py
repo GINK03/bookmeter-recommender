@@ -20,6 +20,7 @@ def _map1(arr):
   index, url = arr
   local_name = 'htmls/{}.pkl.gz'.format( url.replace('/', '_') )
   if os.path.exists(local_name):
+    print('already scraped', url)
     return url, None, None, None
   print('now scraping', url)
   try:
@@ -47,7 +48,7 @@ def _map1(arr):
           href = 'https://bookmeter.com' + href
       except IndexError:
         continue
-      if 'https://bookmeter.com/users' not in href:
+      if 'https://bookmeter.com' not in href:
         continue
       _links.append( href )
       print(href)
@@ -71,32 +72,31 @@ for line in open('aws_ip.txt'):
   print( {'http': '{}:8080'.format(ipaddr),  'https': '{}:8080'.format(ipaddr) } )
 
 def scrape():
-  links = ['https://bookmeter.com/users/1/books/read'] 
+  links = ['https://bookmeter.com/books/9826477'] 
   if '--resume' in sys.argv:
     saveLinks = pickle.loads( gzip.decompress( open('saveLinks.pkl.gz', 'rb').read() ) )
     links = list(saveLinks)
   while True:
     if len(links) == 0:
       break
+    print('iter')
     arrs = [ (index%len(proxys), url) for index, url in enumerate(links) ]
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=3*len(proxys)) as exe:
+    links = []
+    with concurrent.futures.ProcessPoolExecutor(max_workers=4*len(proxys)) as exe:
       for url, html, _links, soup in exe.map( _map1, arrs):
         if html is None:
-          continue # dbにも入れない
-        #db.put(bytes(url,'utf8'), gzip.compress(pickle.dumps( (html, _links ) )))
-        links.remove(url)
+          continue
         open('tmp/finished/' + url.replace('/','_'), 'a' )
         for _link in _links:
           #if db.get(bytes(_link, 'utf8')) is not None:
-          #  continue
-          if os.path.exists('tmp/finished/' + url.replace('/','_')) is True:
+          #  corntinue
+ 
+          if os.path.exists('tmp/finished/' + _link.replace('/','_')) is True:
             continue
           print('find new link', _link)
           links.append( _link )
 
-    #time.sleep(0.1)
-    break
 
 def dump():
 
@@ -113,11 +113,13 @@ def dump():
   for index, filename in arrs: 
     if index%1000 == 0:
       print('now iter', index, '/', size)
-    
-    if size > 1000000:
+   
+    if index > 10000:
+      break
+    #if size > 1000000:
       # sampling rate作る
-      if random.random() > 0.01:
-        continue
+    #  if random.random() > 0.01:
+    #    continue
     try:
       html, _links = pickle.loads( gzip.decompress(open(filename, 'rb').read() ) )
     except Exception as e:
@@ -129,7 +131,7 @@ def dump():
           href = 'https://bookmeter.com' + href
       except IndexError:
         continue
-      if 'https://bookmeter.com/users' not in href:
+      if 'https://bookmeter.com' not in href:
         continue
       links.add( href )
       #print(links)

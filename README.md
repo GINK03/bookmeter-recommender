@@ -266,6 +266,11 @@ $ python3 ranking.py --sim
 0 西の魔女が死んだ(新潮文庫) 1004
 ```
 
+# アイテムベースのレコメンド
+本などの場合、コンテンツが似通っていれば、未読の本のコンテンツをレコメンドするという方法が考えられます  
+この場合、アイテムの中身を見ることが必須になるわけですが、残念ながら本という媒体は知識のプロプラエタリなコンテナなので、そのようなことは通常できないと思います  
+代わりに、ユーザのレビュー情報でレコメンドができるのではないでしょうか
+
 ## 参考
 [1] [Instacart Product2Vec & Clustering Using word2vec](https://www.kaggle.com/goodvc/instacart-product2vec-clustering-using-word2vec)  
 [2] [MRNet-Product2Vec: A Multi-task Recurrent Neural Network for Product Embeddings](https://arxiv.org/pdf/1709.07534.pdf)  

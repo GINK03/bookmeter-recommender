@@ -23,7 +23,12 @@ for name in glob.glob('htmls/*'):
       continue
     title = title.text
     summary = summary.text
-    print(name)
+    print( name)
     print(title)
 
     print( summary )
+    
+    try:
+      open('sammaries/{}.json'.format(title.replace('/', '_')), 'w').write( json.dumps({'name':name, 'title':title, 'summary':summary}, indent=2, ensure_ascii=False))
+    except Exception:
+      continue

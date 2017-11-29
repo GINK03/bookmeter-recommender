@@ -118,6 +118,7 @@ PSYCHO-PASSも好きですが、小説でてたんですか！良いですね。
 # 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 
 一部でproduct2vecと呼ばれる技術のようですが、同名でRNNを用いた方法も提案されており、購買鼓動を一連の時系列として文章のように捉えることで、似た購買行動をするユーザの購買製品が似たようなベクトルになるという方法を取っているようです  
+リクルートではこのアリゴリズムは動作しているよう[4]なのですが、効果のほどはどうなんですかね？知りたいです  
 <p align="center">
   <img width="700px" src="https://user-images.githubusercontent.com/4949982/33325568-fc19a280-d495-11e7-9240-482aaf383aeb.png">
 </p>
@@ -267,3 +268,4 @@ $ python3 ranking.py --sim
 [1] [Instacart Product2Vec & Clustering Using word2vec](https://www.kaggle.com/goodvc/instacart-product2vec-clustering-using-word2vec)  
 [2] [MRNet-Product2Vec: A Multi-task Recurrent Neural Network for Product Embeddings](https://arxiv.org/pdf/1709.07534.pdf)  
 [3] [Deep Learning at AWS: Embedding & Attention Models](https://www.slideshare.net/AmazonWebServices/deep-learning-at-aws-embedding-attention-models)
+[4] [リクルートのデータで世界へ挑む　組織を率いるサイエンティストの仕事観](http://logmi.jp/134774)

@@ -13,6 +13,7 @@ import re
 
 import sys
 
+import os
 if '--poll' in sys.argv:
   while True:
     for name in glob.glob('htmls/*'):
@@ -27,6 +28,8 @@ if '--poll' in sys.argv:
         if title is None or summary is None:
           continue
         title = title.text
+        if os.path.exists('sammaries/{}.json'.format(title.replace('/', '_'))) is True:
+          continue
         summary = summary.text
         print( name)
         print(title)

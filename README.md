@@ -111,6 +111,10 @@ PSYCHO-PASSASYLUM2(… 0.09203579866168446
 ```
 PSYCHO-PASSも好きですが、小説でてたんですか！良いですね。買います！←こんな感じのユースケースを想定しています
 
+## データセットのダウンロード
+1. [アイテムベースの協調フィルタリング結果](https://storage.googleapis.com/nardtree/bookmeter-collaborative-filtering-results/book_book.tar.gz)
+2. [ユーザベースの協調フィルタリング結果](https://storage.googleapis.com/nardtree/bookmeter-collaborative-filtering-results/user_user.tar.gz)
+
 # 2. fasttextでのアイテムベースのproduct2vec(skipgram)
 
 一部でproduct2vecと呼ばれる技術のようですが、同名でRNNを用いた方法も提案されており、購買鼓動を一連の時系列として文章のように捉えることで、似た購買行動をするユーザの購買製品が似たようなベクトルになるという方法を取っているようです  

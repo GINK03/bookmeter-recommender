@@ -10,6 +10,8 @@
 
 Albertさんなどのブログなどを参考し、今回の問題に当てはめると、このようなことであると言えそうです。  
 
+今期は要素間距離の計算方法に、cosine similarityを利用していますが、ジャッカードという距離の取り方や、色々あるので、実際に業務で使う時にはあるべきレコメンドリストを作って定量評価すると良いです。  
+
 <p align="center">
   <img width="700px" src="https://user-images.githubusercontent.com/4949982/33258093-c83903ca-d39b-11e7-8c4d-0ca9622f6d91.png">
 </p>

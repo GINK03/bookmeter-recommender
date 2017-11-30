@@ -4,7 +4,7 @@
 3. アイテムベースのtfidfなどの類似度計算を利用したレコメンド
 
 # 1. 協調フィルタリング
-協調フィルタリング自体は簡潔なアルゴリズムで、実装しようと思えば、簡単にできる類のものであるように思えるのですが、製品と製品の類似度を計算するのに、その製品を購入したユーザをベクトル列としてみなすと割と簡単に計算できます(アイテムをベクトルの特徴量としてもみなせるし、世の中のコンテンツはそっちの方が多い気がしますが、今回はアイテムにひもづくユーザをベクトルにします)  
+協調フィルタリング自体は簡潔なアルゴリズムで、実装しようと思えば、簡単にできる類のものであるように思えるのですが、製品と製品の類似度を計算するのに、その製品を購入したユーザをベクトル列としてみなすと割と簡単に計算できます[5]。世の中のコンテンツはユーザの関連殿の計算の方が多い気がしますが、今回はアイテムにひもづくユーザをベクトルにします　
 
 例えば、今回はbookmeter.comさまのユーザの読んだ本情報を用いて、一人のユーザを一つのユニークな特徴量としてみなすことで、本同士の関連度が計算可能になります  
 
@@ -319,3 +319,4 @@ $ python3 tfidf.py --similarity
 [2] [MRNet-Product2Vec: A Multi-task Recurrent Neural Network for Product Embeddings](https://arxiv.org/pdf/1709.07534.pdf)  
 [3] [Deep Learning at AWS: Embedding & Attention Models](https://www.slideshare.net/AmazonWebServices/deep-learning-at-aws-embedding-attention-models)  
 [4] [リクルートのデータで世界へ挑む　組織を率いるサイエンティストの仕事観](http://logmi.jp/134774)
+[5] [推薦システムのアルゴリズム](http://www.kamishima.net/archive/recsysdoc.pdf)

@@ -321,7 +321,7 @@ $ python3 tfidf.py --similarity
 ```
 
 ## コード
-github似て管理しております。
+githubにて管理しております。
 [https://github.com/GINK03/bookmeter-recommender:embed]
 
 
